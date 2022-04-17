@@ -90,3 +90,26 @@ deploy:
   type: git
   repo: git@github.com:kwanhur/kwanhur.github.io.git
   branch: master
+
+giscus:
+  enable: true
+  repo: kwanhur/kwanhur.github.io
+  repo_id: MDEwOlJlcG9zaXRvcnk3Nzk4Mjk3OQ==
+  category: General
+  category_id: DIC_kwDOBKXtA84COmwf
+  # Available values: pathname | url | title | og:title
+  mapping: title
+  # Available values: 0 | 1
+  reactions_enabled: 1
+  # Available values: 0 | 1
+  emit_metadata: 1
+  # Available values: light | dark | dark_high_contrast | transparent_dark | preferred-color-scheme
+  theme: light
+  # Available values: en | zh-C
+  lang: zh-CN
+  # Available value: anonymous
+  crossorigin: anonymous
+  # Place the comment box above the comments
+  input_position: bottom
+  # Load the comments lazily
+  loading: lazy
