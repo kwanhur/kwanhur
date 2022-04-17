@@ -20,5 +20,9 @@ header:
   paths-ignore:
     - '.gitignore'
     - 'LICENSE'
+    - 'source/CNAME'
+    - 'db.json'
+    - 'package.json'
+    - 'package-lock.json'
 
   comment: on-failure
