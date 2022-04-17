@@ -7,11 +7,28 @@ tags:
     - imagemagick
 ---
 
+<!--
+  ~ Copyright 2022 kwanhur
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
 对于喜欢折腾的人，安装所需系统库都是手工源码编译出来使用，这或许有种可控的感觉。
 
 相比直接使用软件库已编译好的，源码编译可更加自由选择或指定版本。
 
-近期在CentOS-7.2系统上，升级webp图片依赖系统库时，整理了个一键编译ImageMagick脚本，如下：
+近期在 CentOS-7.2 系统上，升级 webp 图片依赖系统库时，整理了个一键编译 ImageMagick 脚本，如下：
 
 <!--more-->
 

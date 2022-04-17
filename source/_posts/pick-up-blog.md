@@ -1,13 +1,29 @@
 ---
+
 title: pick-up-blog
 date: 2022-04-10 17:27:49
 tags:
     - journal
 ---
 
+<!--
+  ~ Copyright 2022 kwanhur
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
 该博客被遗弃很久了，近期看到 `NexT` 主题比较合心意，决定折腾下，更换了主题，看到的效果还不错。
-
-
 
 另一原因是，之前写的分享内容全部在公司内部`wiki`系统，离开后也就留下了；所以决定后续关于技术研究、想法点子等采用`Github Pages`形式分享。
 
