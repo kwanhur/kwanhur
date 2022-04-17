@@ -30,3 +30,13 @@ repos:
       entry: license-eye header fix
       language: system
       types: [file]
+    - id: autocorrect-check
+      name: autocorrect check
+      entry: autocorrect --lint
+      language: system
+      types: [file]
+    - id: autocorrect-fix
+      name: autocorrect fix
+      entry: autocorrect --fix
+      language: system
+      types: [file]
