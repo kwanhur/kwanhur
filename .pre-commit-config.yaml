@@ -24,9 +24,11 @@ repos:
       name: autocorrect check
       entry: autocorrect --lint
       language: system
+      exclude_types: [json]
       types: [file]
     - id: autocorrect-fix
       name: autocorrect fix
       entry: autocorrect --fix
       language: system
+      exclude_types: [json]
       types: [file]
