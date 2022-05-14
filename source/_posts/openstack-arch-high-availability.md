@@ -1,0 +1,106 @@
+---
+title: OpenStack 系列（架构篇 3）- 高可用
+tags:
+  - openstack
+  - arch
+  - high-availability
+date: 2022-05-14 15:10:28
+---
+
+<!--
+  ~ Copyright 2022 kwanhur
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
+<!--
+  ~ Copyright 2022 kwanhur
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
+> 本篇文章内容翻译自 OpenStack 官网 [^1]。
+
+以下将从五个方面剖析高可用的需求。
+
+<!--more-->
+
+## 数据平面和控制平面
+
+在设计一个 OpenStack 云平台时，认真考虑 SLA 潜在需求是非常重要的。包括核心服务需要维护好各种资源实例的高可用，涵盖计算、网络、存储以及额外运行在这些资源之上的实例。这些服务里通常可认为是数据平面的服务，并且是一直在线可用的。
+
+其他服务，比如 CRUD（创建、读取、更新、删除）操作、度量、监控等，通常当做控制平面。SLA 更可能说明这些服务较低的持续运行时长。
+
+组成 OpenStack 云平台的服务列表会有大量的需求，你需要考虑如何满足 SLA 每一条条款。例如，为了能提供计算服务，最少量的存储、消息队列和数据库服务，以及它们之间的网络服务需同步支持。
+
+如果数据平面和控制平面是逻辑和物理隔离的，持续维护将会更加简单。例如，重启一个控制器就有可能不会影响到客户。如果一个服务失败影响到整个服务器的操作，控制平面和数据平面的隔离要能快速维护并且控制少影响到客户的操作。
+
+## 消除单点故障
+
+OpenStack 部署高可用方式至少需要 2 个可用节点。可以运行所有依赖的服务，包括消息队列服务（如 RabbitMQ 或 QPID）和数据库服务（如 MySQL 或 MariaDB）。正如云上服务都是可扩展的，后端服务同样需能扩展。监控和报告服务器可用率和响应耗时，以及系统负载，能帮助做决策扩展。
+
+OpenStack 服务应该部署在多服务器上，以规避单点故障。为确保可用性，OpenStack 服务在负载均衡器后提供多节点实例。
+
+同样有一小部分 OpenStack 服务只能运行在一处地方（比如 ceilometer-agent-central 服务）。为了防止服务单点故障，可以通过集群软件（如 Pacemaker）管理。
+
+在 OpenStack 里，提供服务的基础设施应该通常可用，尤其承诺了 SLA。设计网络架构时，要确保网络可用性，以确保不存在故障单点。考虑到大规模交换、路由和冗余电力在这核心基础设施，同样关联性组合网络来提供多样性路由来保障高可用的交换设施。
+
+设计网络功能时一定要加之谨慎。现在，OpenStack 支持了延迟网络（nova-network）系统和新一代可扩展的 OpenStack 网络（neutron）。OpenStack 网络和延迟网络各自有优缺点。他们同样使用和支持不同的网络部署模型，参考[指引](https://docs.openstack.org/ops-guide/arch_network_design.html#network-topology)。
+
+当使用网络服务是，OpenStack 控制器节点或分开的网络节点处理路由转发，除非路由模式选择了动态虚拟路由器。在控制器节点上运行路由服务，混合了数据和控制平面，可能导致复杂的性能问题及定位。更有能使用第三方软件和外部应用来帮助运维高可用的三层路由。这样允许更通用的应用控制网络硬件，或者以安全的方式提供复杂多层次的 web 应用。这种场景，交换设施一定要支持三层路由。
+
+应用架构设计一定要适应云平台底层基础设施的能力。如果计算节点没提供无损的在线迁移能力，那它一定会遇上当一个计算节点故障，在上面的实例和本地数据被同步删除。然而，提供用户期望实例可长期运行的，基础设施一定要以消除任何故障单点的方式进行部署。这方式包括使用企业级存储的共享文件系统，或者 OpenStack 块存储来满足服务特性需求。
+
+如果设计存储包括共享方式访问集中式存储，确保它设计时规避故障单点，以满足数据平面 SLA 需求甚至更优解。
+
+## 多地域设计中消除单点故障
+
+部分服务通常是在多地域间共享，包括身份认证服务和网站面板。在这场景中，很有必要确认服务的数据库是复制的，且在单地域缺失时能跨站点被多节点访问。
+
+在各站点间，应该部署多网络链路来为所有组件提供冗余性。这包括存储副本，它能被指定网络或具备 QoS VLAN 隔离，来控制这复制流量或者为这些流量提供优先级管理。
+
+如果多于一个站点的设计缺乏协作的，在所有站点维护对象可用性的能力就受到对象存储设计和实现的潜在影响。多站点间的 WAN 网络设计同样需要深层次考虑。
+
+如果应用是运行在云平台内并非云驱动的，应该要有清晰的衡量指标和期望值来明确基础设施能做到和不能做到的地方。例如在各站点间进行的共享存储。很可能原生 OpenStack 并不支持，需要第三方硬件厂商来满足这样的需求。另一个例子就是应用是能够在对象存储里直接消费资源的。
+
+多站点间连接非常大的挑战，设计考虑因素就更加的复杂。多站点实施时还需预先规划内部和外部连接的额外拓扑，比如 full mesh topology、hub spoke、spine leaf 和 3D Torus。
+
+## 站点丢失及恢复
+
+灾难性事件能破坏站点部分或者全部功能。应该有相应预案和恢复策略来应对这些场景。
+
+* 部署应用需能提供持续服务，更重要的，一定要考虑到单站点不可用时的性能影响和应用可靠性。
+* 要真正理解在发生站点宕掉时，站点间的对象副本和数据发生了什么。如果采用队列支撑，要考虑到能正常安全运行多长时间才发生错误。
+* 故障发生后，要确保在站点恢复上线后所有操作能正常执行。我们建议在做恢复架构设计时考虑避免竞态条件。
+
+## 复制站点间数据
+
+通常来说，副本是保护对象存储的最佳方式。现有存储架构中有多种的副本方案，比如同步、异步镜像。多数对象存储和后端存储系统都是在存储子系统层面来实现副本。对象存储同样支持副本技术适应云平台需求。
+
+组织一定要找到数据完整性和数据可用性之间的平衡。副本策略可能影响灾难恢复的方法。
+
+副本跨机柜、跨数据中心甚至款地域，更多聚焦确保数据落地。保证数据就近、最快访问的能力，对应用体现友好是非常有必要的。
+
+[^1] https://docs.openstack.org/arch-design/arch-requirements/arch-requirements-ha.html
