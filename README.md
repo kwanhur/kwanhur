@@ -40,7 +40,7 @@
 
 ### 🖼 Conferences
 
-![Apache APISIX Summit Asia 2022](https://apisix-summit.org/api/ticket-images/kwanhur)
+[![Apache APISIX Summit Asia 2022](https://apisix-summit.org/api/ticket-images/kwanhur)](https://apisix-summit.org/)
 
 ### 🤝 Connect with Me
 
