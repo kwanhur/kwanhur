@@ -17,7 +17,7 @@
 
 ### Hi there, I'm kwanhur 👋
 
-> focus on NFV(Load Balancer), NetDevOps enthusiasitic, Open Source Contributor of Apache APISIX, CNCF sandbox BFE, Moby ipvs etc.
+> Focus on NFV(Load Balancer), NetDevOps enthusiasitic, Open Source Contributor of Apache APISIX, CNCF sandbox BFE, Moby ipvs etc.
 
 ### 👨‍🏭 About me
 
